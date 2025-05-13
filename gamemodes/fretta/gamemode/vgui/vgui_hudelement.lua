@@ -19,11 +19,11 @@ function PANEL:PerformLayout()
     self:SetContentAlignment(5)
 
     if self.LabelPanel then
-        self.LabelPanel:SetPos(self:GetPadding(), self:GetPadding())
+        self.LabelPanel:SetPos(self:GetPadding(), self:GetPadding() * 0.35)
         self.LabelPanel:SizeToContents()
         self.LabelPanel:SetSize(self.LabelPanel:GetWide() + self:GetPadding() * 0.5, self.LabelPanel:GetTall() + self:GetPadding() * 0.5)
         self:SetTextInset(self.LabelPanel:GetWide() + self:GetPadding(), 0)
-        self:SetContentAlignment(4)
+        -- self:SetContentAlignment(5)
     end
 
     self:SizeToContents()

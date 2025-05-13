@@ -37,7 +37,19 @@ function PANEL:PerformLayout()
 
 		self:SetSize(x, tallest)
 	else
-		-- todo.
+		local y = self.m_Spacing
+		local widest = 0
+
+		for k, v in pairs(self.m_Items) do
+			v:SetPos(0, y)
+			y = y + v:GetTall() + self.m_Spacing
+			widest = math.max(widest, v:GetWide())
+
+			if self.m_AlignBottom then v:AlignBottom() end
+			if self.m_AlignCenter then v:CenterHorizontal() end
+		end
+
+		self:SetSize(widest, y)
 	end
 end
 
@@ -48,7 +60,7 @@ AccessorFunc(PANEL, "m_ValueFunction", "ValueFunction")
 AccessorFunc(PANEL, "m_ColorFunction", "ColorFunction")
 
 --[[---------------------------------------------------------
-   Name: Init
+	 Name: Init
 ---------------------------------------------------------]]
 function PANEL:Init() end
 
@@ -63,8 +75,8 @@ function PANEL:GetColorFromFunction()
 end
 
 function PANEL:Think()
-    self:SetTextColor(self:GetColorFromFunction())
-    self:SetText(self:GetTextValueFromFunction())
+	self:SetTextColor(self:GetColorFromFunction())
+	self:SetText(self:GetTextValueFromFunction())
 end
 
 derma.DefineControl("DHudUpdater", "A HUD Element", PANEL, "DHudElement")
@@ -74,26 +86,26 @@ local PANEL = {}
 AccessorFunc(PANEL, "m_Function", "Function")
 
 --[[---------------------------------------------------------
-   Name: Init
+	 Name: Init
 ---------------------------------------------------------]]
 function PANEL:Init()
-    HudBase.Init(self)
+	HudBase.Init(self)
 end
 
 function PANEL:Think()
-    if not self.m_ValueFunction then return end
+	if not self.m_ValueFunction then return end
 
-    self:SetTextColor(self:GetColorFromFunction())
+	self:SetTextColor(self:GetColorFromFunction())
 
-    local EndTime = self:m_ValueFunction()
-    if EndTime == -1 then return end
-    if not EndTime or EndTime < CurTime() then
-        self:SetText("00:00")
-        return
-    end
+	local EndTime = self:m_ValueFunction()
+	if EndTime == -1 then return end
+	if not EndTime or EndTime < CurTime() then
+		self:SetText("00:00")
+		return
+	end
 
-    local Time = util.ToMinutesSeconds(EndTime - CurTime())
-    self:SetText(Time)
+	local Time = util.ToMinutesSeconds(EndTime - CurTime())
+	self:SetText(Time)
 end
 
 derma.DefineControl("DHudCountdown", "A HUD Element", PANEL, "DHudUpdater")

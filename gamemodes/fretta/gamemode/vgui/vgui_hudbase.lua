@@ -33,7 +33,8 @@ end
 
 function PANEL:Paint()
 	if not self.m_bPartOfBar then
-		draw.RoundedBox(4, 0, 0, self:GetWide(), self:GetTall(), Color(0, 0, 0, 100))
+		-- draw.RoundedBox(4, 0, 0, self:GetWide(), self:GetTall(), Color(0, 0, 0, 100))
+		draw.SS13Box("slimecore", 1, 0, 0, self:GetWide(), self:GetTall())
 	end
 end
 

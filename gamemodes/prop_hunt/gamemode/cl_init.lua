@@ -42,6 +42,7 @@ include("cl_targetid.lua")
 include("cl_autotaunt.lua")
 include("cl_scoreboard.lua")
 include("cl_credits.lua")
+include("cl_ss13ui.lua")
 
 -- Called immediately after starting the gamemode 
 function Initialize()
@@ -148,11 +149,12 @@ function HUDPaint()
 		end
 
 		if blindlock_time_left_msg then
-			surface.SetFont("HunterBlindLockFont")
+			surface.SetFont("SpessFont_HUD1")
 			local tw, _ = surface.GetTextSize(blindlock_time_left_msg)
 
-			draw.RoundedBox(8, 20, 20, tw + 20, 26, Color(0, 0, 0, 75))
-			draw.DrawText(blindlock_time_left_msg, "HunterBlindLockFont", 31, 26, Color(255, 255, 0, 255), TEXT_ALIGN_LEFT)
+			draw.SS13Box("slimecore", 1, 20, 18, tw + 20, 30)
+			-- draw.RoundedBox(8, 20, 20, tw + 20, 26, Color(0, 0, 0, 75))
+			draw.DrawText(blindlock_time_left_msg, "SpessFont_HUD1", 31, 26, Color(255, 255, 0, 255), TEXT_ALIGN_LEFT)
 		end
 	end
 

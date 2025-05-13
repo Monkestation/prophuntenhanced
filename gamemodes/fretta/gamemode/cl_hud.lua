@@ -65,9 +65,11 @@ function GM:RefreshHUD()
 	elseif IsObserver then
 		GAMEMODE:UpdateHUD_Observer(WaitingToRespawn, InRound, ObserveMode, ObserveTarget)
 	elseif not Alive then
-		GAMEMODE:UpdateHUD_Dead(WaitingToRespawn, InRound)
+		-- GAMEMODE:UpdateHUD_Dead(WaitingToRespawn, InRound)
+		GAMEMODE:UpdateHUD_Player( false, InRound, WaitingToRespawn )
 	else
-		GAMEMODE:UpdateHUD_Alive(InRound)
+		-- GAMEMODE:UpdateHUD_Alive(InRound)
+		GAMEMODE:UpdateHUD_Player(true, InRound, false)
 
 		if GetGlobalBool("RoundWaitForPlayers") and ((team.NumPlayers(TEAM_HUNTERS) < 1) or (team.NumPlayers(TEAM_PROPS) < 1)) then
 			GAMEMODE:UpdateHUD_WaitForPlayers(InRound)
@@ -105,6 +107,7 @@ function GM:UpdateHUD_RoundResult(RoundResult, Alive)
 	local RespawnText = vgui.Create("DHudElement")
 	RespawnText:SizeToContents()
 	RespawnText:SetText(txt)
+	RespawnText:SetFont( "SpessFont_HUD1" )
 	GAMEMODE:AddHUDItem(RespawnText, 8)
 end
 
@@ -133,114 +136,78 @@ function GM:UpdateHUD_Observer(bWaitingToSpawn, InRound, ObserveMode, ObserveTar
 		GAMEMODE:AddHUDItem(txtLabel, 2)
 	end
 
-	GAMEMODE:UpdateHUD_Dead(bWaitingToSpawn, InRound)
+	GAMEMODE:UpdateHUD_Player( false, InRound, bWaitingToSpawn )
 end
 
-function GM:UpdateHUD_Dead(bWaitingToSpawn, InRound)
-	if not InRound and GAMEMODE.RoundBased then
-		local RespawnText = vgui.Create("DHudElement")
-		RespawnText:SizeToContents()
-		RespawnText:SetText(PHE.LANG.HUD.WAIT)
-
-		GAMEMODE:AddHUDItem(RespawnText, 8)
-		return
-	end
-
-	if bWaitingToSpawn then
-		local RespawnTimer = vgui.Create("DHudCountdown")
-		RespawnTimer:SizeToContents()
-		RespawnTimer:SetValueFunction(function() return LocalPlayer():GetNWFloat("RespawnTime", 0) end)
-		RespawnTimer:SetLabel("SPAWN IN")
-
-		GAMEMODE:AddHUDItem(RespawnTimer, 8)
-		return
-	end
-
-	--[[
-	if ( InRound ) then
-	
-		local RoundTimer = vgui.Create( "DHudCountdown" );
-			RoundTimer:SizeToContents()
-			RoundTimer:SetValueFunction( function() 
-											if ( GetGlobalFloat( "RoundStartTime", 0 ) > CurTime() ) then return GetGlobalFloat( "RoundStartTime", 0 )  end 
-											return GetGlobalFloat( "RoundEndTime" ) end )
-			RoundTimer:SetLabel( "TIME" )
-		GAMEMODE:AddHUDItem( RoundTimer, 8 )
-		return
-	
-	end
-	]]
-
-	local Bar = vgui.Create("DHudBar")
-	GAMEMODE:AddHUDItem(Bar, 8)
-
-	-- This should show on dead players too
-
-	if InRound then
-		local TeamIndicator_Name_AddString = "(DEAD) "
-		if LocalPlayer():Team() == TEAM_SPECTATOR then TeamIndicator_Name_AddString = "" end
-
-		local TeamIndicator = vgui.Create("DHudUpdater")
-			TeamIndicator:SizeToContents()
-			TeamIndicator:SetValueFunction(function() return TeamIndicator_Name_AddString .. "" .. team.GetName(LocalPlayer():Team()) end)
-			TeamIndicator:SetColorFunction(function() return team.GetColor(LocalPlayer():Team()) end)
-			TeamIndicator:SetFont("HudSelectionText")
-		Bar:AddItem(TeamIndicator)
-
-		local RoundNumber = vgui.Create("DHudUpdater")
-			RoundNumber:SizeToContents()
-			RoundNumber:SetValueFunction(function() return GetGlobalInt("RoundNumber", 0) end)
-			RoundNumber:SetLabel(PHE.LANG.HUD.ROUND)
-		Bar:AddItem(RoundNumber)
-
-		local RoundTimer = vgui.Create("DHudCountdown")
-			RoundTimer:SizeToContents()
-			RoundTimer:SetValueFunction(function()
-				if GetGlobalFloat("RoundStartTime", 0) > CurTime() then return GetGlobalFloat("RoundStartTime", 0) end
-				return GetGlobalFloat("RoundEndTime")
-			end)
-			RoundTimer:SetLabel(PHE.LANG.HUD.TIME)
-		Bar:AddItem(RoundTimer)
-
-	end
-
-	if Team ~= TEAM_SPECTATOR and not Alive and not GAMEMODE.RoundBased then
-		local RespawnText = vgui.Create("DHudElement")
-			RespawnText:SizeToContents()
-			RespawnText:SetText("Press Fire to Spawn")
-		GAMEMODE:AddHUDItem(RespawnText, 8)
-	end
-end
-
-function GM:UpdateHUD_Alive(InRound)
+function GM:UpdateHUD_Player(isAlive, isInRound, isWaitingToSpawn)
+	local barPosition = isAlive and 2 or 8
 	if GAMEMODE.RoundBased or GAMEMODE.TeamBased then
 		local Bar = vgui.Create("DHudBar")
-		GAMEMODE:AddHUDItem(Bar, 2)
+		GAMEMODE:AddHUDItem(Bar, barPosition)
 
 		if GAMEMODE.TeamBased and GAMEMODE.ShowTeamName then
+			local teamNameFunc = function()
+				local prefix = (not isAlive and LocalPlayer():Team() ~= TEAM_SPECTATOR) and "(DEAD) " or ""
+				return prefix .. team.GetName(LocalPlayer():Team())
+			end
+
+			local teamColorFunc = function()
+				return team.GetColor(LocalPlayer():Team())
+			end
+
 			local TeamIndicator = vgui.Create("DHudUpdater")
-				TeamIndicator:SizeToContents()
-				TeamIndicator:SetValueFunction(function() return team.GetName(LocalPlayer():Team()) end)
-				TeamIndicator:SetColorFunction(function() return team.GetColor(LocalPlayer():Team()) end)
-				TeamIndicator:SetFont("HudSelectionText")
+			TeamIndicator:SizeToContents()
+			TeamIndicator:SetValueFunction(teamNameFunc)
+			TeamIndicator:SetColorFunction(teamColorFunc)
+			TeamIndicator:SetFont("SpessFont_HUD1")
 			Bar:AddItem(TeamIndicator)
 		end
 
 		if GAMEMODE.RoundBased then
 			local RoundNumber = vgui.Create("DHudUpdater")
-				RoundNumber:SizeToContents()
-				RoundNumber:SetValueFunction(function() return GetGlobalInt("RoundNumber", 0) end)
-				RoundNumber:SetLabel(PHE.LANG.HUD.ROUND)
+			RoundNumber:SetPos(0, 0)
+			RoundNumber:SizeToContents()
+			RoundNumber:SetValueFunction(function() return GetGlobalInt("RoundNumber", 0) end)
+			RoundNumber:SetLabel(PHE.LANG.HUD.ROUND)
+			RoundNumber:SetFont("SpessFont_HUD1")
+			RoundNumber.LabelPanel:SetFont("SpessFont_HUD1")
+
 			Bar:AddItem(RoundNumber)
 
 			local RoundTimer = vgui.Create("DHudCountdown")
-				RoundTimer:SizeToContents()
-				RoundTimer:SetValueFunction(function()
-					if (GetGlobalFloat("RoundStartTime", 0) > CurTime()) then return GetGlobalFloat("RoundStartTime", 0) end
-					return GetGlobalFloat("RoundEndTime")
-				end)
-				RoundTimer:SetLabel(PHE.LANG.HUD.TIME)
+			RoundTimer:SizeToContents()
+			RoundTimer:SetValueFunction(function()
+				if GetGlobalFloat("RoundStartTime", 0) > CurTime() then
+					return GetGlobalFloat("RoundStartTime", 0)
+				end
+				return GetGlobalFloat("RoundEndTime")
+			end)
+			RoundTimer:SetLabel(PHE.LANG.HUD.TIME)
+			RoundTimer:SetFont("SpessFont_HUD1")
+			RoundTimer.LabelPanel:SetFont("SpessFont_HUD1")
 			Bar:AddItem(RoundTimer)
+		end
+	end
+
+	if not isAlive then
+		if not isInRound and GAMEMODE.RoundBased then
+			local RespawnText = vgui.Create("DHudElement")
+			RespawnText:SizeToContents()
+			RespawnText:SetText("Waiting for round start")
+			RespawnText:SetFont("SpessFont_HUD1")
+			GAMEMODE:AddHUDItem(RespawnText, 8)
+		elseif isWaitingToSpawn then
+			local RespawnTimer = vgui.Create("DHudCountdown")
+			RespawnTimer:SizeToContents()
+			RespawnTimer:SetValueFunction(function() return LocalPlayer():GetNWFloat("RespawnTime", 0) end)
+			RespawnTimer:SetLabel("SPAWN IN")
+			GAMEMODE:AddHUDItem(RespawnTimer, 8)
+		elseif LocalPlayer():Team() ~= TEAM_SPECTATOR and not GAMEMODE.RoundBased then
+			local RespawnText = vgui.Create("DHudElement")
+			RespawnText:SizeToContents()
+			RespawnText:SetText("Press Fire to Spawn")
+			RespawnText:SetFont("SpessFont_HUD1")
+			GAMEMODE:AddHUDItem(RespawnText, 8)
 		end
 	end
 end

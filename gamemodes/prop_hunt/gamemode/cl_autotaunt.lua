@@ -10,7 +10,7 @@ local teamCheckTimer = "ph_autotaunt_teamchecktimer"
 local xStart
 local xEnd
 local y
-local w = 140
+local w = 180
 local h = 30
 local previousTime
 local tweenTime = 0
@@ -62,9 +62,10 @@ local function AutoTauntPaint()
 
 	local txt = "Auto taunting in " .. timeLeft
 
-	draw.RoundedBox(5, x, y, w, h, Color(0, 0, 0, 200))
+	-- draw.RoundedBox(5, x, y, w, h, Color(0, 0, 0, 200))
+	draw.SS13Box("slimecore", 1, x,y,w,h)
 	draw.RoundedBox(5, x + 5, y + 5, (w - 10) * percentage, h - 10, Color(200, 0, 0, 200))
-	draw.DrawText(txt, "HunterBlindLockFont", x + 70, ScrH() - 57, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+	draw.DrawText(txt, "TinyUnicode_Tiny", x + 88, ScrH() - 65, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
 end
 hook.Add("HUDPaint", "PH_AutoTauntPaint", AutoTauntPaint)
 
@@ -117,9 +118,9 @@ local function CheckPlayer()
 	return false
 end
 
-local function AutoTauntSpawn()
-	xStart = ScrW() + 200
-	xEnd = ScrW() - 195
+function AutoTauntSpawn()
+	xStart = ScrW() + 190
+	xEnd = ScrW() - 220
 	y = ScrH() - 65
 
 	if not CheckPlayer() then
