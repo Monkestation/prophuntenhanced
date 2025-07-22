@@ -1,4 +1,4 @@
--- Gamemode
+-- Ship
 resource.AddWorkshop("1758906555")
 
 -- Send required file to clients
@@ -67,6 +67,20 @@ local function ForceCloseTauntWindow(num)
 	end
 end
 
+local function PlayRoundEndSound()
+	local endsound = table.Random(PHE.ENDSOUNDS)
+	for _, pl in pairs(player.GetAll()) do
+		pl:SendLua("surface.PlaySound('" .. endsound .. "')")
+	end
+end
+
+local function PlayRoundStartSound()
+	local startsound = table.Random(PHE.STARTSOUNDS)
+	for _, pl in pairs(player.GetAll()) do
+		pl:SendLua("surface.PlaySound('" .. startsound .. "')")
+	end
+end
+
 -- Called alot
 function GM:CheckPlayerDeathRoundEnd()
 	if not GAMEMODE.RoundBased or not GAMEMODE:InRound() then
@@ -79,10 +93,11 @@ function GM:CheckPlayerDeathRoundEnd()
 		GAMEMODE:RoundEndWithResult(1001, PHE.LANG.HUD.DRAW)
 		PHE.VOICE_IS_END_ROUND = 1
 		ForceCloseTauntWindow(1)
-
-		net.Start("PH_RoundDraw_Snd")
-		net.Broadcast()
-
+		PlayRoundEndSound()
+		
+		-- net.Start("PH_RoundDraw_Snd")
+		-- net.Broadcast()
+		
 		hook.Call("PH_OnRoundDraw", nil)
 		return
 	end
@@ -97,19 +112,21 @@ function GM:CheckPlayerDeathRoundEnd()
 		ForceCloseTauntWindow(1)
 
 		-- send the win notification
-		if TeamID == TEAM_HUNTERS then
-			net.Start("PH_TeamWinning_Snd")
-			net.WriteString(PHE.WINNINGSOUNDS[TEAM_HUNTERS])
-			net.Broadcast()
-		elseif TeamID == TEAM_PROPS then
-			net.Start("PH_TeamWinning_Snd")
-			net.WriteString(PHE.WINNINGSOUNDS[TEAM_PROPS])
-			net.Broadcast()
-		end
+		PlayRoundEndSound()
+		-- if TeamID == TEAM_HUNTERS then
+		-- 	net.Start("PH_TeamWinning_Snd")
+		-- 	net.WriteString(PHE.WINNINGSOUNDS[TEAM_HUNTERS])
+		-- 	net.Broadcast()
+		-- elseif TeamID == TEAM_PROPS then
+		-- 	net.Start("PH_TeamWinning_Snd")
+		-- 	net.WriteString(PHE.WINNINGSOUNDS[TEAM_PROPS])
+		-- 	net.Broadcast()
+		-- end
 
 		hook.Call("PH_OnRoundWinTeam", nil, TeamID)
 		return
 	end
+
 end
 
 -- Player Voice & Chat Control to prevent Metagaming. (As requested by some server owners/suggestors.)
@@ -146,7 +163,6 @@ function GM:PlayerCanHearPlayersVoice(listen, speaker)
 
 	-- does return true, true required here?
 end
-
 -- Control Players Chat
 function GM:PlayerCanSeePlayersChat(txt, onteam, listen, speaker)
 	if onteam then
@@ -281,7 +297,7 @@ end
 function GM:PlayerExchangeProp(pl, ent)
 	if not (IsValid(pl) and IsValid(ent)) then return end
 
-	if pl:Team() == TEAM_PROPS and pl:IsOnGround() and not pl:Crouching() and table.HasValue(PHE.USABLE_PROP_ENTITIES, ent:GetClass()) and ent:GetModel() then
+	if pl:Team() == TEAM_PROPS && pl:IsOnGround() && !pl:Crouching() && table.HasValue(PHE.USABLE_PROP_ENTITIES, ent:GetClass()) && ent:GetModel() then
 		if table.HasValue(PHE.BANNED_PROP_MODELS, ent:GetModel()) then
 			pl:ChatError("That prop has been banned from the server.")
 		elseif IsValid(ent:GetPhysicsObject()) and IsValid(pl.ph_prop) and (pl.ph_prop:GetModel() ~= ent:GetModel() or pl.ph_prop:GetSkin() ~= ent:GetSkin()) then
@@ -714,11 +730,12 @@ function GM:RoundTimerEnd()
 	GAMEMODE:RoundEndWithResult(TEAM_PROPS, string.format(PHE.LANG.HUD.WIN, "Props"))
 	PHE.VOICE_IS_END_ROUND = 1
 	ForceCloseTauntWindow(1)
-
-	net.Start("PH_TeamWinning_Snd")
-	net.WriteString(PHE.WINNINGSOUNDS[TEAM_PROPS])
-	net.Broadcast()
-
+	
+	-- net.Start("PH_TeamWinning_Snd")
+	-- net.WriteString(PHE.WINNINGSOUNDS[TEAM_PROPS])
+	-- net.Broadcast()
+	PlayRoundEndSound()
+	
 	hook.Call("PH_OnTimerEnd", nil)
 end
 
@@ -860,6 +877,7 @@ function GM:OnRoundEnd(num)
 	end
 
 	hook.Call("PH_OnRoundEnd", nil, num)
+	
 end
 
 function GM:RoundStart()
@@ -889,6 +907,8 @@ function GM:RoundStart()
 		team.SetScore(TEAM_PROPS, 0)
 		team.SetScore(TEAM_HUNTERS, 0)
 	end
+
+	PlayRoundStartSound()
 
 	-- Send this as a global boolean
 	SetGlobalBool("RoundWaitForPlayers", GetConVar("ph_waitforplayers"):GetBool())

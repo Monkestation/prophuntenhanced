@@ -276,11 +276,12 @@ function GM:ScoreboardShow()
 		menu.Credits:DockMargin(0, 0, 0, 4)
 		function menu.Credits:Paint(w, h)
 			surface.SetFont("RobotoHUD-25")
-			local t = GAMEMODE.Name or ""
+			local t = "Monkestation PropHunt - PH:E"
 			local tw, th = surface.GetTextSize(t)
-			draw.ShadowText(t, "RobotoHUD-25", 4, 0, Color(199, 49, 29), 0)
+			
+			-- draw.ShadowText(t, "RobotoHUD-25", 4, 0, Color(199, 49, 29), 0)
 
-			draw.ShadowText("by: Wolvindra-Vinzuerio, Jai Choccy Fox, & Lucky.", "RobotoHUD-L15", 4 + tw + 24, h * 0.9, Color(220, 220, 220), 0, 4)
+			-- draw.ShadowText("by: Wolvindra-Vinzuerio, Jai Choccy Fox, & Lucky.", "RobotoHUD-L15", 4 + tw + 24, h * 0.9, Color(220, 220, 220), 0, 4)
 
 			local round = GetGlobalInt("RoundNumber", 0)
 			local total_rounds = GetConVarNumber("ph_rounds_per_map")
@@ -292,7 +293,7 @@ function GM:ScoreboardShow()
 
 		function menu.Credits:PerformLayout()
 			surface.SetFont("RobotoHUD-25")
-			local w, h = surface.GetTextSize(GAMEMODE.Name or "")
+			local w, h = surface.GetTextSize("Monkestation PropHunt - PH:E")
 			self:SetTall(h)
 		end
 

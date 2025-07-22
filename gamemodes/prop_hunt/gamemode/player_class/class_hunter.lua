@@ -81,11 +81,13 @@ function CLASS:GetHandsModel()
 	end
 end
 
+
 -- Called when a player dies with this class
 function CLASS:OnDeath(pl, attacker, dmginfo)
 	pl:CreateRagdoll()
 	pl:UnLock()
 
+	pl:EmitSound("taunts/monke/props/sec_death.ogg", 100, math.random(80, 120), 1, CHAN_AUTO)
 	-- Always Reset the ViewOffset
 	pl:SetViewOffset(Vector(0,0,64))
 	pl:SetViewOffsetDucked(Vector(0,0,28))

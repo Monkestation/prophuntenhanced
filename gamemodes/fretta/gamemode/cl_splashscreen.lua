@@ -85,8 +85,8 @@ end
 local vgui_Splash = vgui.RegisterTable(PANEL, "DButton")
 
 function GM:ShowSplash()
-	local pnl = vgui.CreateFromTable(vgui_Splash)
-	pnl:MakePopup()
+	-- local pnl = vgui.CreateFromTable(vgui_Splash)
+	-- pnl:MakePopup()
 end
 
 

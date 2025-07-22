@@ -39,7 +39,7 @@ function CLASS:OnSpawn(pl)
 
 	if GetConVar("ph_use_custom_plmodel_for_prop"):GetBool() then
 		if table.HasValue(PHE.PROP_PLMODEL_BANS, string.lower(player_manager.TranslatePlayerModel(pl:GetInfo("cl_playermodel")))) or table.HasValue(PHE.PROP_PLMODEL_BANS, string.lower(pl:GetInfo("cl_playermodel"))) then
-			pl.ph_prop:SetModel("models/player/kleiner.mdl")
+			pl.ph_prop:SetModel(PHE.default_prop_plymodel)
 			pl:ChatPrint("Your custom playermodel was banned from Props.")
 		else
 			pl.ph_prop:SetModel(player_manager.TranslatePlayerModel(pl:GetInfo("cl_playermodel")))
@@ -71,6 +71,7 @@ end
 -- Called when a player dies with this class
 function CLASS:OnDeath(pl, attacker, dmginfo)
 	pl:RemoveProp()
+	pl:EmitSound("taunts/monke/props/borg_deathsound.ogg", 100, math.random(80, 120), 1, CHAN_AUTO)
 	-- reset the Prop Rotating State.
 	net.Start("PHE.rotateState")
 	net.WriteInt(0, 2)
