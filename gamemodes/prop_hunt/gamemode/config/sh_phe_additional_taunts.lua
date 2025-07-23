@@ -1,5 +1,6 @@
 -- Add sounds for props
 local taunts = {}
+
 -- Begin Table: Hunters
 taunts.Hunter = {
 	["Man Laugh 1"] = "manlaugh1.ogg",
