@@ -11,9 +11,9 @@ net.Receive("CL2SV_PlayThisTaunt", function(len, ply)
 
 	if IsValid(ply) and not IsDelayed(ply) then
 		if file.Exists("sound/" .. snd, "GAME") then
-			ply:Taunt(ply:GetInfoNum("ph_cl_tauntpitch", 100), snd) 
+			ply:Taunt(ply:GetInfoNum("ph_cl_tauntpitch", 100), snd)
 		else
-			ply:ChatError("That taunt you selected does not exists on server!")
+			ply:ChatError("That taunt you selected does not exist on server!")
 		end
 	else
 		ply:ChatWarning("Please wait in few seconds...!")

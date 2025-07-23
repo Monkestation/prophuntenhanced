@@ -99,7 +99,7 @@ taunts.Props = {
 }
 
 -- Add more Props Taunt here...
-local baseTauntPath = "sound/taunts/monke"
+local baseTauntPath = "taunts/monke"
 for propTaunt, propPath in pairs(taunts.Props) do
 	list.Set("PHE.CustomPropTaunts", propTaunt, baseTauntPath .. "/props/" .. propPath)
 end
@@ -111,11 +111,11 @@ end
 if SERVER then
 	-- Add sounds to the game using resource.AddFile
 	for name, path in pairs(taunts.Props) do
-		resource.AddSingleFile(baseTauntPath .. "/props/" .. path)
+		resource.AddSingleFile("sound/" .. baseTauntPath .. "/props/" .. path)
 	end
 
 	for name, path in pairs(taunts.Hunter) do
-		resource.AddSingleFile(baseTauntPath .. "/hunters/" .. path)
+		resource.AddSingleFile("sound/" .. baseTauntPath .. "/hunters/" .. path)
 	end
 end
 
