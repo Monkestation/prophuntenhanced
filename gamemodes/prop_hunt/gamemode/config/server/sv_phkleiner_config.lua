@@ -34,7 +34,7 @@ local function PostCreatePlayerClip()
 		-- Force all players become Kleiner on respawn!
 		timer.Simple(5, function()
 			for k, v in pairs(ents.FindByClass("ph_prop")) do
-				v:SetModel("models/player/kleiner.mdl")
+				v:SetModel(PHE.default_prop_plymodel)
 				v:DrawShadow(false)
 			end
 		end)

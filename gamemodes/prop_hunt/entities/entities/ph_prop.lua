@@ -15,7 +15,7 @@ function ENT:SetupDataTables() end
 
 function ENT:Initialize()
 	if SERVER then
-		self:SetModel("models/player/kleiner.mdl")
+		self:SetModel(PHE.default_prop_plymodel)
 		self:SetLagCompensated(true)
 		self:SetMoveType(MOVETYPE_NONE)
 		self.health = 100
@@ -38,7 +38,7 @@ function ENT:Think()
 			local ang = me:GetAngles()
 			local lockstate = pl:GetPlayerLockedRot()
 
-			if self:GetModel() == "models/player/kleiner.mdl" or self:GetModel() == player_manager.TranslatePlayerModel(GetConVar("cl_playermodel"):GetString()) then
+			if self:GetModel() == PHE.default_prop_plymodel or self:GetModel() == player_manager.TranslatePlayerModel(GetConVar("cl_playermodel"):GetString()) then
 				self:SetPos(pos)
 			else
 				self:SetPos(pos - Vector(0, 0, self:OBBMins().z))

@@ -5,7 +5,7 @@ hook.Add("Move", "moveProp", function(ply, move)
 		-- Set position and angles
 		if IsValid(ent) and IsValid(ply) and ply:Alive() then
 			-- Set position
-			if ent:GetModel() == "models/player/kleiner.mdl" or ent:GetModel() == player_manager.TranslatePlayerModel(ply:GetInfo("cl_playermodel")) then
+			if ent:GetModel() == PHE.default_prop_plymodel or ent:GetModel() == player_manager.TranslatePlayerModel(ply:GetInfo("cl_playermodel")) then
 				ent:SetPos(move:GetOrigin())
 			else
 				ent:SetPos(move:GetOrigin() - Vector(0, 0, ent:OBBMins().z))
