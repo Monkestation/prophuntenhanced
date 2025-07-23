@@ -1,9 +1,11 @@
-# Prop Hunt: ENHANCED
+# Prop Hunt: ENHANCED - Monkestation Edition
 
 ![Prop Hunt: Enhanced Logo](https://i.ibb.co/7Yq3PhX/image.png "Prop Hunt: Enhanced")
 ![Prop Hunt: Enhanced Menu](https://i.imgur.com/bXu9yeA.png "Prop Hunt: Enhanced")
 
 ## Information
+
+This addon is a modification of PH:E for monkestation with our own changes
 
 ## Main gamemode Description
 Prop Hunt: Enhanced is an improved version of the classic Prop Hunt Gamemode. This gamemode is focused on continuous maintenance and full customisation, offering numerous features. It includes significant changes such as an enhanced HUD, code optimisation, player skins, and additional features.
